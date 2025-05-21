@@ -1,89 +1,60 @@
-import React, { type JSX } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Header from './components/common/Header';
+import ProtectedRoute from './components/common/ProtectedRoute';
+import Home from './pages/Home';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
-// import Products from './pages/Products';
-import Welcome from './pages/WelcomPage';
-import Profile from './pages/Profile';
-import ProductDetail from './pages/ProductDetail';
+import Register from './pages/Register';
+import Products from './pages/Products';
+import ProductCreate from './pages/ProductCreate';
 import Cart from './pages/Cart';
-import Checkout from './pages/CheckOut';
-import CreateProduct from './pages/CreateProduct';
-import CreateCategory from './pages/CreateCategory';
-import Navbar from './components/Navbar';
-import { useUserStore } from './store/userStore';
+import NotFound from './pages/NotFound';
 
-const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
-  const user = useUserStore((state) => state.user);
-  return user ? children : <Navigate to="/login" />;
-};
+const theme = createTheme({
+  palette: {
+    primary: { main: '#1976d2' },
+    secondary: { main: '#dc004e' },
+  },
+});
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route
-        //   path="/products"
-        //   element={
-        //     <ProtectedRoute>
-        //       <Products />
-        //     </ProtectedRoute>
-        //   }
-        // />
-        // <Route
-          path="/products/:id"
-          element={
-            <ProtectedRoute>
-              <ProductDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/checkout"
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create-product"
-          element={
-            <ProtectedRoute>
-              <CreateProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create-category"
-          element={
-            <ProtectedRoute>
-              <CreateCategory />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute adminOnly>
+                <Products />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/product/create"
+            element={
+              <ProtectedRoute adminOnly>
+                <ProductCreate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 };
 
