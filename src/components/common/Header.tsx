@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { userSignOut } from '../../api/auth';
 
+
+
 const Header: React.FC = () => {
-  const { user, setUser } = useAuthStore();
+  const { user, role, setUser } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -22,11 +24,19 @@ const Header: React.FC = () => {
         {user ? (
           <>
             <Button color="inherit" component={Link} to="/products">
-              Products
+              All Products
+            </Button>
+            <Button color="inherit" component={Link} to="/my-products">
+              My Products
             </Button>
             <Button color="inherit" component={Link} to="/products/create">
               Create Product
             </Button>
+            {role === 'admin' && (
+              <Button color="inherit" component={Link} to="/categories/create">
+                Create Category
+              </Button>
+            )}
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>

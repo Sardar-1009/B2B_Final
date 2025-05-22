@@ -1,20 +1,20 @@
-
-import { useState } from 'react';
-import { TextField, Button, Box, MenuItem } from '@mui/material';
-import { Product } from '../types';
+import { useState, useEffect } from 'react';
+import { TextField, Button, Box, MenuItem, CircularProgress } from '@mui/material';
+import { Product, Category } from '../types';
+import { getCategories } from '../api/categories';
 
 interface ProductFormProps {
   product?: Product;
   onSubmit: (product: Omit<Product, 'id'>) => void;
 }
 
-const categories = ['Men', 'Women', 'Kids', 'Accessories'];
+const categories = ['Одежда', 'Обувь', 'Электроника', 'Аксессуары'];
 
 const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
   const [name, setName] = useState(product?.name || '');
   const [description, setDescription] = useState(product?.description || '');
   const [price, setPrice] = useState(product?.price.toString() || '');
-  const [category, setCategory] = useState(product?.category || '');
+  const [category, setCategory] = useState(product?.category || categories[0]);
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,6 +25,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit }) => {
       price: parseFloat(price),
       category,
       imageUrl,
+      userId: product?.userId || '',
     });
   };
 

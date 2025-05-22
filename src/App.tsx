@@ -8,7 +8,10 @@ import Register from './pages/Register';
 import ProductList from './pages/ProductList';
 import ProductCreate from './pages/ProductCreate';
 import ProductEdit from './pages/ProductEdit';
-import { Container } from '@mui/material';
+import CategoryCreate from './pages/CategoriesCreate';
+import MyProducts from './pages/MyProducts';
+import { Container, Box } from '@mui/material';
+import Cart from './pages/Cart';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuthStore();
@@ -17,20 +20,16 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 const App: React.FC = () => {
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Header />
-      <Container sx={{ py: 4 }}>
+      <Container sx={{ py: 4, flexGrow: 1 }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/products"
-            element={
-              <ProtectedRoute>
-                <ProductList />
-              </ProtectedRoute>
-            }
+            element={<ProductList />}
           />
           <Route
             path="/products/create"
@@ -48,10 +47,19 @@ const App: React.FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/my-products"
+            element={
+              <ProtectedRoute>
+                <MyProducts />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </Container>
       <Footer />
-    </>
+    </Box>
   );
 };
 

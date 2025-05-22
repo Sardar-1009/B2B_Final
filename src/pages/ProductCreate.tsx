@@ -1,17 +1,20 @@
-
 import { Container, Typography } from '@mui/material';
 import ProductForm from '../components/ProductForm';
 import { createProduct } from '../api/products';
 import { useProductStore } from '../store/productStore';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../types';
+import { useAuthStore } from '../store/authStore';
+
 
 const ProductCreate: React.FC = () => {
   const { fetchProducts } = useProductStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (product: Omit<Product, 'id'>) => {
-    await createProduct(product);
+    if (!user) return;
+    await createProduct({ ...product, userId: user.uid });
     fetchProducts();
     navigate('/products');
   };

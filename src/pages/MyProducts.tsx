@@ -1,19 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress, Button } from '@mui/material';
 import { useProductStore } from '../store/productStore';
 import ProductCard from '../components/ProductCard';
+import { getUserProducts } from '../api/products';
+import { useAuthStore } from '../store/authStore';
+import { Product } from '../types/index';
 
-const ProductList: React.FC = () => {
-  const { products, loading, fetchProducts, fetchMoreProducts, lastDoc } = useProductStore();
+const ITEMS_PER_PAGE = 10;
+
+const MyProducts: React.FC = () => {
+  const { user } = useAuthStore();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    if (!user) return;
+    const fetchMyProducts = async () => {
+      setLoading(true);
+      const userProducts = await getUserProducts(user.uid);
+      setProducts(userProducts);
+      setLoading(false);
+    };
+    fetchMyProducts();
+  }, [user]);
+
+  const paginatedProducts = products.slice(0, page * ITEMS_PER_PAGE);
 
   return (
     <>
       <Typography variant="h4" gutterBottom>
-        All Products
+        My Products
       </Typography>
       {loading ? (
         <CircularProgress />
@@ -27,7 +44,7 @@ const ProductList: React.FC = () => {
               justifyContent: 'flex-start',
             }}
           >
-            {products.map((product) => (
+            {paginatedProducts.map((product) => (
               <Box
                 key={product.id}
                 sx={{
@@ -39,11 +56,11 @@ const ProductList: React.FC = () => {
               </Box>
             ))}
           </Box>
-          {lastDoc && (
+          {products.length > paginatedProducts.length && (
             <Button
               variant="contained"
               sx={{ mt: 2 }}
-              onClick={fetchMoreProducts}
+              onClick={() => setPage(page + 1)}
             >
               Load More
             </Button>
@@ -54,4 +71,4 @@ const ProductList: React.FC = () => {
   );
 };
 
-export default ProductList;
+export default MyProducts;
