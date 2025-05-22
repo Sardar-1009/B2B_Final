@@ -1,28 +1,25 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/authStore';
 import Header from './components/common/Header';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import Footer from './components/common/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Products from './pages/Products';
+import ProductList from './pages/ProductList';
 import ProductCreate from './pages/ProductCreate';
-import Cart from './pages/Cart';
-import NotFound from './pages/NotFound';
+import ProductEdit from './pages/ProductEdit';
+import { Container } from '@mui/material';
 
-const theme = createTheme({
-  palette: {
-    primary: { main: '#1976d2' },
-    secondary: { main: '#dc004e' },
-  },
-});
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuthStore();
+  return user ? <>{children}</> : <Navigate to="/login" />;
+};
 
 const App: React.FC = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Header />
+    <>
+      <Header />
+      <Container sx={{ py: 4 }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -30,31 +27,31 @@ const App: React.FC = () => {
           <Route
             path="/products"
             element={
-              <ProtectedRoute adminOnly>
-                <Products />
+              <ProtectedRoute>
+                <ProductList />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/product/create"
+            path="/products/create"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute>
                 <ProductCreate />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/cart"
+            path="/products/edit/:id"
             element={
               <ProtectedRoute>
-                <Cart />
+                <ProductEdit />
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+      </Container>
+      <Footer />
+    </>
   );
 };
 
