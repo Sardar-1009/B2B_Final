@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { userSignOut } from '../../api/auth';
 
-
-
 const Header: React.FC = () => {
   const { user, role, setUser } = useAuthStore();
   const navigate = useNavigate();
@@ -32,11 +30,9 @@ const Header: React.FC = () => {
             <Button color="inherit" component={Link} to="/products/create">
               Create Product
             </Button>
-            {role === 'admin' && (
-              <Button color="inherit" component={Link} to="/categories/create">
-                Create Category
-              </Button>
-            )}
+            <Button color="inherit" component={Link} to="/cart">
+              Cart
+            </Button>
             <Button color="inherit" onClick={handleLogout}>
               Logout
             </Button>
@@ -48,6 +44,9 @@ const Header: React.FC = () => {
             </Button>
             <Button color="inherit" component={Link} to="/register">
               Register
+            </Button>
+            <Button color="inherit" component={Link} to="/cart">
+              Cart
             </Button>
           </>
         )}

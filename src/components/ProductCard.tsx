@@ -1,24 +1,17 @@
-import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Card, CardMedia, CardContent, Typography, Button, Box } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { Product } from '../types';
-import { deleteProduct } from '../api/products';
-import { useProductStore } from '../store/productStore';
+import { useCartStore } from '../store/cartStore';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const navigate = useNavigate();
-  const { fetchProducts } = useProductStore();
-
-  const handleDelete = async () => {
-    await deleteProduct(product.id);
-    fetchProducts();
-  };
+  const { addToCart } = useCartStore();
 
   return (
-    <Card>
+    <Card sx={{ maxWidth: 345, height: '100%' }}>
       <CardMedia
         component="img"
         height="140"
@@ -26,19 +19,37 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         alt={product.name}
       />
       <CardContent>
-        <Typography variant="h6">{product.name}</Typography>
+        <Typography gutterBottom variant="h6" component="div">
+          {product.name}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {product.description}
         </Typography>
-        <Typography variant="h6">${product.price}</Typography>
-        <Typography variant="body2">Category: {product.category}</Typography>
-        <Button onClick={() => navigate(`/products/edit/${product.id}`)}>
+        <Typography variant="body1" color="text.primary" sx={{ mt: 1 }}>
+          ${product.price}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Category: {product.category}
+        </Typography>
+      </CardContent>
+      <Box sx={{ p: 2, display: 'flex', gap: 1 }}>
+        <Button
+          variant="contained"
+          component={Link}
+          to={`/products/edit/${product.id}`}
+          size="small"
+        >
           Edit
         </Button>
-        <Button onClick={handleDelete} color="error">
-          Delete
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => addToCart(product)}
+        >
+          Add to Cart
         </Button>
-      </CardContent>
+      </Box>
     </Card>
   );
 };
