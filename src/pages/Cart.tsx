@@ -1,6 +1,6 @@
-import { useCartStore } from '@store/cartStore';
-import { useAuthStore } from '@store/authStore';
-import { createOrder } from '@api/orders';
+import { useCartStore } from '../store/cartStore';
+import { useAuthStore } from '../store/authStore';
+import { createOrder } from '../api/order';
 import { Box, Typography, Button, TextField, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
